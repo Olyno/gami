@@ -2,7 +2,14 @@ package com.olyno.gami.interfaces;
 
 public enum GameMessageTarget {
 
+    /**
+     * All players in the game or team of player
+     */
     GLOBAL("global"),
+
+    /**
+     * Only the player
+     */
     PLAYER("player");
 
     private String target;
