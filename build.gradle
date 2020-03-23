@@ -1,0 +1,40 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java-library'
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
+}
+
+group 'com.olyno.gami'
+version '0.1.0'
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url 'https://oss.sonatype.org/content/groups/public/' }
+    maven { url 'https://repo.destroystokyo.com/repository/maven-public/' }
+    maven { url 'http://maven.sk89q.com/repo' }
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+    testImplementation 'junit:junit:4.12'
+    // compile 'com.github.jcabi:jcabi-aspects:0.22.6'
+}
+
+processResources {
+    filter(ReplaceTokens, tokens: [version: version])
+}
+
+shadowJar {
+    configurations = [project.configurations.compile]
+}
+
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                   'Implementation-Version': project.version)
+    }
+}

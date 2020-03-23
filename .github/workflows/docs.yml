@@ -1,0 +1,30 @@
+name: Build and Deploy Documentation
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+
+      - name: Build documentation
+        run: gradle javadoc
+
+      - name: Publish documentation
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v1
+        with:
+          target_branch: gh-pages
+          build_dir: build/docs/javadoc
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
