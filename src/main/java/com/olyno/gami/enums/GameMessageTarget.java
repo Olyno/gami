@@ -1,4 +1,4 @@
-package com.olyno.gami.interfaces;
+package com.olyno.gami.enums;
 
 public enum GameMessageTarget {
 
