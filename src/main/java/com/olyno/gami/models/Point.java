@@ -4,17 +4,17 @@ public class Point {
 
     private Integer points;
     private Integer advantage;
-    private Object target;
+    private Object author;
 
     public Point( Integer points ) {
         this.points = points;
         this.advantage = points;
     }
 
-    public Point( Integer points, Object target ) {
+    public Point( Integer points, Object author ) {
         this.points = points;
         this.advantage = points;
-        this.target = target;
+        this.author = author;
     }
 
     /**
@@ -49,12 +49,22 @@ public class Point {
         this.advantage = advantage;
     }
 
-    public Object getTarget() {
-        return target;
+    /**
+     * Returns the author (player) who scored the point
+     *
+     * @return Who scored the point
+     */
+    public Object getAuthor() {
+        return author;
     }
 
-    public void setTarget( Object target ) {
-        this.target = target;
+    /**
+     * Set author of the point
+     *
+     * @param author The player who scored the point
+     */
+    public void setAuthor( Object author ) {
+        this.author = author;
     }
 
 }
