@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import com.olyno.gami.Gami;
-import com.olyno.gami.interfaces.GameMessageTarget;
+import com.olyno.gami.enums.GameMessageTarget;
+import com.olyno.gami.enums.GameMessageType;
 import com.olyno.gami.listeners.TeamListener;
 
 public class Team extends GameManager {
@@ -29,14 +30,14 @@ public class Team extends GameManager {
         this.points = new LinkedList<Point>(Arrays.asList( new Point(0) ));
 		this.game = game;
 		this.goal = 5;
-		this.joinMessages.put(GameMessageTarget.GLOBAL, "${player} joined the ${team} team!");
-		this.joinMessages.put(GameMessageTarget.PLAYER, "You joined the ${team} team!");
-		this.leaveMessages.put(GameMessageTarget.GLOBAL, "${player} left the ${team} team!");
-		this.leaveMessages.put(GameMessageTarget.PLAYER, "You left the ${team} team!");
-		this.winPointMessages.put(GameMessageTarget.GLOBAL, "${player} scored a point for the ${team} team!");
-		this.winPointMessages.put(GameMessageTarget.PLAYER, "You scored a point for your team!");
-		this.losePointMessages.put(GameMessageTarget.GLOBAL, "${player} lost a point for the ${team} team");
-		this.losePointMessages.put(GameMessageTarget.PLAYER, "The opponent team won a point!");
+		this.messages.get(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} joined the ${team} team!"));
+		this.messages.get(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.PLAYER, "You joined the ${team} team!"));
+		this.messages.get(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} left the ${team} team!"));
+		this.messages.get(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.PLAYER, "You left the ${team} team!"));
+		this.messages.get(GameMessageType.WIN_POINT).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} scored a point for the ${team} team!"));
+		this.messages.get(GameMessageType.WIN_POINT).add(new GameMessage(GameMessageTarget.PLAYER, "You scored a point for your team!"));
+		this.messages.get(GameMessageType.LOSE_POINT).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} lost a point for the ${team} team"));
+		this.messages.get(GameMessageType.LOSE_POINT).add(new GameMessage(GameMessageTarget.PLAYER, "The opponent team won a point!"));
 		if (!game.getTeams().containsKey(name)) {
 			game.addTeam(this);
 			for (TeamListener listener : Gami.getTeamListeners()) {

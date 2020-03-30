@@ -1,15 +1,15 @@
 package com.olyno.gami.models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
 
-import com.olyno.gami.interfaces.GameMessageTarget;
+import com.olyno.gami.enums.GameMessageType;
 
 public abstract class GameManager {
 
-	protected HashMap<GameMessageTarget, String> joinMessages;
-	protected HashMap<GameMessageTarget, String> leaveMessages;
+	protected HashMap<GameMessageType, ArrayList<GameMessage>> messages;
 
 	protected String name;
 	protected String displayName;
@@ -27,12 +27,9 @@ public abstract class GameManager {
 		this.maxPlayer = 2;
 		this.players = new LinkedList<>();
 		this.spectators = new LinkedList<>();
-		this.joinMessages = new HashMap<>();
-		this.leaveMessages = new HashMap<>();
-		this.joinMessages.put(GameMessageTarget.GLOBAL, "${player} joined the game!");
-		this.joinMessages.put(GameMessageTarget.PLAYER, "You joined the game ${game}");
-		this.leaveMessages.put(GameMessageTarget.GLOBAL, "${player} left the game!");
-		this.leaveMessages.put(GameMessageTarget.PLAYER, "You left the game ${game}");
+		this.messages = new HashMap<>();
+		this.messages.put(GameMessageType.JOIN, new ArrayList<GameMessage>());
+		this.messages.put(GameMessageType.LEAVE, new ArrayList<GameMessage>());
 	}
 
 	/**
@@ -219,22 +216,12 @@ public abstract class GameManager {
 	public abstract void delete();
 
 	/**
-	 * The Join Message,
-	 * When a player joins your Game or Team
+	 * All existing messages
 	 *
-	 * @return A hashmap of the Join Message
+	 * @return A hashmap of messages
 	 */
-	public HashMap<GameMessageTarget, String> getJoinMessages() {
-		return joinMessages;
-	}
-
-	/**
-	 * The Leave Message
-	 *
-	 * @return A hashmap of the Leave Message
-	 */
-	public HashMap<GameMessageTarget, String> getLeaveMessages() {
-		return leaveMessages;
+	public HashMap<GameMessageType, ArrayList<GameMessage>> getMessages() {
+		return messages;
 	}
 
 }

@@ -3,21 +3,19 @@ package com.olyno.gami.models;
 import java.util.HashMap;
 
 import com.olyno.gami.Gami;
-import com.olyno.gami.interfaces.GameMessageTarget;
-import com.olyno.gami.interfaces.GameState;
+import com.olyno.gami.enums.GameMessageAs;
+import com.olyno.gami.enums.GameMessageTarget;
+import com.olyno.gami.enums.GameMessageType;
+import com.olyno.gami.enums.GameState;
 import com.olyno.gami.listeners.GameListener;
 
 public class Game extends GameManager {
 
 	private HashMap<String, Team> teams;
-
-	// Messages
-	private HashMap<GameMessageTarget, String> endMessages;
-	private HashMap<Integer, String> timerMessages;
+	private GameMessageAs timerMessageAs;
 
 	private GameState state;
 	private Integer timer;
-	private String timerMessageAs;
 	private Team winner;
 	private Object world;
 
@@ -25,18 +23,23 @@ public class Game extends GameManager {
 		super(name);
 		this.state = GameState.WAITING;
 		this.timer = 15;
-		this.endMessages.put(GameMessageTarget.GLOBAL, "The ${game} game is finished! The winner is the ${winner} team!");
-		this.timerMessageAs = "title";
-		this.timerMessages.put(20, "Game starts in ${time} seconds");
-		this.timerMessages.put(15, "Game starts in ${time} seconds");
-		for (int index = 1; index < 11; index ++) {
-			this.timerMessages.put(index, "Game starts in ${time} seconds");
+		this.timerMessageAs = GameMessageAs.TITLE;
+		this.messages.get(GameMessageType.TIMER).add(new GameTimerMessage(20, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
+		this.messages.get(GameMessageType.TIMER).add(new GameTimerMessage(15, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
+		for (int time = 1; time < 11; time ++) {
+			this.messages.get(GameMessageType.TIMER).add(new GameTimerMessage(time, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
 		}
 		this.teams = new HashMap<>();
-		this.endMessages = new HashMap<>();
-		this.timerMessages = new HashMap<>();
+		this.messages.get(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} joined the game!"));
+		this.messages.get(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.PLAYER, "You joined the game ${game}"));
+		this.messages.get(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} left the game!"));
+		this.messages.get(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.PLAYER, "You left the game ${game}"));
+		this.messages.get(GameMessageType.END).add(new GameMessage(GameMessageTarget.GLOBAL, "The ${game} game is finished! The winner is the ${winner} team!"));
 		if (!Gami.getGames().containsKey(name)) {
 			Gami.getGames().put(name, this);
+			for (GameListener listener : Gami.getGameListeners()) {
+				listener.onGameCreated(this);
+			}
 		}
 	}
 
@@ -98,7 +101,7 @@ public class Game extends GameManager {
 	}
 
 	/**
-	 * Return a team from its name
+	 * Returns a team from its name
 	 *
 	 * @param team The team which will be return
 	 * @return Team with the name in argument
@@ -154,28 +157,22 @@ public class Game extends GameManager {
 	}
 
 	/**
-	 * Set the timer before the game starts (in seconds)
-	 *
-	 * @param timer The new timer
+	 * Returns which form the message should take,
+	 * Default: title
+	 * 
+	 * @return The timer message type
 	 */
-	public void setTimer(Integer timer) {
-		this.timer = timer;
-	}
-
-	/**
-	 * @return The timer message type (title or action bar)
-	 */
-	public String getTimerMessageAs() {
+	public GameMessageAs getTimerMessageAs() {
 		return timerMessageAs;
 	}
 
 	/**
-	 * Set the timer message as title or action bar
-	 *
-	 * @param timerMessageAs The new timer message type
+	 * Sets which form the message should take
+	 * 
+	 * @param as The form of the message
 	 */
-	public void setTimerMessageAs(String timerMessageAs) {
-		this.timerMessageAs = timerMessageAs;
+	public void setTimerMessageAs(GameMessageAs as) {
+		this.timerMessageAs = as;
 	}
 
 	/**
@@ -194,15 +191,6 @@ public class Game extends GameManager {
 	 */
 	public void setWinner(Team winner) {
 		this.winner = winner;
-	}
-
-	/**
-	 * Returns a hashmap of all messages during the timer
-	 *
-	 * @return All timer messages
-	 */
-	public HashMap<Integer, String> getTimerMessages() {
-		return timerMessages;
 	}
 
 	@Override
@@ -249,10 +237,6 @@ public class Game extends GameManager {
 				listener.onSpectatorLeave(this, player);
 			}
 		}
-	}
-
-	public HashMap<GameMessageTarget, String> getEndMessages() {
-		return endMessages;
 	}
 
 }
