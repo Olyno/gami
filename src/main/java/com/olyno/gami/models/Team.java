@@ -12,7 +12,6 @@ import com.olyno.gami.listeners.TeamListener;
 public class Team extends GameManager {
 
 	private LinkedList<Point> points;
-	private Game game;
 	private Integer goal;
 
 	// Messages
@@ -25,10 +24,9 @@ public class Team extends GameManager {
      * @param name The name of the team
 	 * @param game The game of the team
      */
-	public Team(String name, Game game) {
+	public Team(String name) {
 		super(name);
         this.points = new LinkedList<Point>(Arrays.asList( new Point(0) ));
-		this.game = game;
 		this.goal = 5;
 		this.messages.get(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} joined the ${team} team!"));
 		this.messages.get(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.PLAYER, "You joined the ${team} team!"));
@@ -38,11 +36,8 @@ public class Team extends GameManager {
 		this.messages.get(GameMessageType.WIN_POINT).add(new GameMessage(GameMessageTarget.PLAYER, "You scored a point for your team!"));
 		this.messages.get(GameMessageType.LOSE_POINT).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} lost a point for the ${team} team"));
 		this.messages.get(GameMessageType.LOSE_POINT).add(new GameMessage(GameMessageTarget.PLAYER, "The opponent team won a point!"));
-		if (!game.getTeams().containsKey(name)) {
-			game.addTeam(this);
-			for (TeamListener listener : Gami.getTeamListeners()) {
-				listener.onTeamCreated(this);
-			}
+		for (TeamListener listener : Gami.getTeamListeners()) {
+			listener.onTeamCreated(this);
 		}
     }
 
@@ -121,15 +116,6 @@ public class Team extends GameManager {
 		}
 	}
 
-    /**
-     * Return the game which is the parent of the team
-     *
-     * @return The parent game of a team
-     */
-    public Game getGame() {
-		return game;
-	}
-
 	/**
 	 * Returns the won point messages
 	 *
@@ -146,6 +132,20 @@ public class Team extends GameManager {
 	 */
 	public HashMap<GameMessageTarget, String> getLosePointMessagess() {
 		return losePointMessages;
+	}
+
+	/**
+	 * Returns the game of the Team
+	 *
+	 * @return The game of the Team
+	 */
+	public Game getGame() {
+		for (Game game : Gami.getGames().values()) {
+			if (game.getTeams().containsValue(this)) {
+				return game;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public class Team extends GameManager {
 
 	@Override
 	public void delete() {
-		game.getTeams().remove(this.getName());
+		getGame().getTeams().remove(this.getName());
 		for (TeamListener listener : Gami.getTeamListeners()) {
 			listener.onTeamDeleted(this);
 		}
