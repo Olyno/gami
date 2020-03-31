@@ -16,9 +16,13 @@
 
  * ``GameMessage``: A message showed to a game or a team.
    * Get a ``GameMessageTarget`` and a ``String`` in the constructor.
- * ``GameTimerMessage``: A message showed when a game starts.
+ * ``GameTimerMessage``: A ``GameMessage`` showed when a game starts.
+   * Get  a ``Integer``, ``GameMessageTarget`` and a ``String`` in the constructor.
  * ``GameManager``, ``Game`` and ``Team``: Messages format changed. Please have a look in ``GameMessage`` model.
+   * Added a ``getMessages(GameMessageTarget)`` method: Returns a filtered list of message by ``GameMessageTarget``.
+   * Added a ``getMessages()`` method: Returns the list of message of the ``Game`` or the ``Team``.
  * ``Point``: Renamed ``target`` to author. This is not a target who scores a point, but an author, so a player.
+ * ``GameMessageTarget``: Take a ``Predicate`` object in second parameter. It's used to make a filter system for messages.
 
 ## 0.1.0
 
