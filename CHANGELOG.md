@@ -19,10 +19,20 @@
  * ``GameTimerMessage``: A ``GameMessage`` showed when a game starts.
    * Get  a ``Integer``, ``GameMessageTarget`` and a ``String`` in the constructor.
  * ``GameManager``, ``Game`` and ``Team``: Messages format changed. Please have a look in ``GameMessage`` model.
-   * Added a ``getMessages(GameMessageTarget)`` method: Returns a filtered list of message by ``GameMessageTarget``.
-   * Added a ``getMessages()`` method: Returns the list of message of the ``Game`` or the ``Team``.
+   * Added a ``getMessages(GameMessageTarget)`` method: Returns a filtered list of ``GameMessage`` by ``GameMessageTarget``.
+   * Added a ``getMessages()`` method: Returns the list of ``GameMessage`` of the ``Game`` or the ``Team``.
+ * ``Game``:
+   * Added a ``removeTeam(Team)`` method: Remove a team from a game.
+ * ``Team``:
+   * Added a ``getGame()`` method: Returns the ``Game`` of the ``Team``. 
  * ``Point``: Renamed ``target`` to author. This is not a target who scores a point, but an author, so a player.
  * ``GameMessageTarget``: Take a ``Predicate`` object in second parameter. It's used to make a filter system for messages.
+
+### Listeners
+
+ * ``GameListener``:
+   * Added ``onTeamAdded`` event
+   * Added ``OnTeamRemoved`` event
 
 ## 0.1.0
 
