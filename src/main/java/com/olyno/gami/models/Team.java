@@ -117,24 +117,6 @@ public class Team extends GameManager {
 	}
 
 	/**
-	 * Returns the won point messages
-	 *
-	 * @return A hashmap of the Win Point Message
-	 */
-	public HashMap<GameMessageTarget, String> getWinPointMessagess() {
-		return winPointMessages;
-	}
-
-	/**
-	 * Returns the lost point messages
-	 *
-	 * @return A hashmap of the Lose Point Message
-	 */
-	public HashMap<GameMessageTarget, String> getLosePointMessagess() {
-		return losePointMessages;
-	}
-
-	/**
 	 * Returns the game of the Team
 	 *
 	 * @return The game of the Team
