@@ -14,10 +14,6 @@ public class Team extends GameManager {
 	private LinkedList<Point> points;
 	private Integer goal;
 
-	// Messages
-	private HashMap<GameMessageTarget, String> winPointMessages;
-	private HashMap<GameMessageTarget, String> losePointMessages;
-
     /**
      * Create a new team
 	 * 
