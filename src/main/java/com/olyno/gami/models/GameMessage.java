@@ -8,18 +8,27 @@ public class GameMessage {
     private String message;
 
     /**
-     * Create a game message
+     * Create a message for a specific target.
      * 
-     * @param target Who is the target of the message
-     * @param message What is the message
+     * @param target The target of the message
+     * @param message The message
      */
     public GameMessage(GameMessageTarget target, String message) {
+        this.target = target;
         this.message = message;
+    }
+
+    /**
+     * Set the target of the message
+     * 
+     * @param target The target of the message
+     */
+    public void setTarget(GameMessageTarget target) {
         this.target = target;
     }
 
     /**
-     * Returns the target message
+     * Returns the target of the message
      * 
      * @return The target of the message
      */
@@ -28,7 +37,16 @@ public class GameMessage {
     }
 
     /**
-     * Returns the message
+     * Set the message to send
+     * 
+     * @param message The message to send
+     */
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    /**
+     * Returns the message to send
      * 
      * @return The message
      */

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import com.olyno.gami.enums.GameMessageTarget;
 import com.olyno.gami.enums.GameMessageType;
 
 public abstract class GameManager {
@@ -28,8 +30,6 @@ public abstract class GameManager {
 		this.players = new LinkedList<>();
 		this.spectators = new LinkedList<>();
 		this.messages = new HashMap<>();
-		this.messages.put(GameMessageType.JOIN, new ArrayList<GameMessage>());
-		this.messages.put(GameMessageType.LEAVE, new ArrayList<GameMessage>());
 	}
 
 	/**
@@ -222,6 +222,20 @@ public abstract class GameManager {
 	 */
 	public HashMap<GameMessageType, ArrayList<GameMessage>> getMessages() {
 		return messages;
+	}
+
+	/**
+	 * All existing messages filtered by a GameMessageTarget
+	 *
+	 * @return An ArrayList of filtered messages
+	 */
+	public ArrayList<GameMessage> getMessages(GameMessageTarget target) {
+		return new ArrayList<>(
+			messages.get(target)
+				.stream()
+				.filter(target.getFilter())
+				.collect(Collectors.toList())
+		);
 	}
 
 }

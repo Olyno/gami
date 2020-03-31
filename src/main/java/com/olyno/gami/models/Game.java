@@ -1,5 +1,6 @@
 package com.olyno.gami.models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.olyno.gami.Gami;
@@ -24,12 +25,16 @@ public class Game extends GameManager {
 		this.state = GameState.WAITING;
 		this.timer = 15;
 		this.timerMessageAs = GameMessageAs.TITLE;
+		this.teams = new HashMap<>();
+		this.messages.put(GameMessageType.JOIN, new ArrayList<GameMessage>());
+		this.messages.put(GameMessageType.LEAVE, new ArrayList<GameMessage>());
+		this.messages.put(GameMessageType.TIMER, new ArrayList<GameMessage>());
+		this.messages.put(GameMessageType.END, new ArrayList<GameMessage>());
 		this.messages.get(GameMessageType.TIMER).add(new GameTimerMessage(20, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
 		this.messages.get(GameMessageType.TIMER).add(new GameTimerMessage(15, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
 		for (int time = 1; time < 11; time ++) {
 			this.messages.get(GameMessageType.TIMER).add(new GameTimerMessage(time, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
 		}
-		this.teams = new HashMap<>();
 		this.messages.get(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} joined the game!"));
 		this.messages.get(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.PLAYER, "You joined the game ${game}"));
 		this.messages.get(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} left the game!"));
@@ -167,7 +172,7 @@ public class Game extends GameManager {
 	}
 
 	/**
-	 * Sets which form the message should take
+	 * Set which form the message should take
 	 * 
 	 * @param as The form of the message
 	 */

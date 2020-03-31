@@ -19,7 +19,7 @@ public class GameTimerMessage extends GameMessage {
     }
 
     /**
-     * Sets the time when the message will be send.
+     * Set the time when the message will be send.
      * 
      * @param time The new time of the message
      */
