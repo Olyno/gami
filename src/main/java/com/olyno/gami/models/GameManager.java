@@ -229,9 +229,9 @@ public abstract class GameManager {
 	 *
 	 * @return An ArrayList of filtered messages
 	 */
-	public ArrayList<GameMessage> getMessages(GameMessageTarget target) {
+	public ArrayList<GameMessage> getMessages(GameMessageType type, GameMessageTarget target) {
 		return new ArrayList<>(
-			messages.get(target)
+			messages.get(type)
 				.stream()
 				.filter(target.getFilter())
 				.collect(Collectors.toList())
