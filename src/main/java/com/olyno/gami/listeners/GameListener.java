@@ -1,6 +1,7 @@
 package com.olyno.gami.listeners;
 
 import com.olyno.gami.models.Game;
+import com.olyno.gami.models.Team;
 
 public interface GameListener {
 
@@ -45,6 +46,22 @@ public interface GameListener {
      * @param game The game stopped
      */
     public void onGameStopped(Game game);
+
+    /**
+     * Triggered when a team is added to a Game
+     * 
+     * @param game The game with the new Team
+     * @param team The team which has been added
+     */
+    public void onTeamAdded(Game game, Team team);
+
+    /**
+     * Triggered when a team is removed from a Game
+     * 
+     * @param game The game with the old Team
+     * @param team The team which has been removed
+     */
+    public void onTeamRemoved(Game game, Team team);
 
     /**
      * Triggered when a player joins a game

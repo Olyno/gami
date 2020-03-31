@@ -116,12 +116,27 @@ public class Game extends GameManager {
 	}
 
 	/**
-	 * Add a team to your game
+	 * Add a team to the game
 	 *
 	 * @param team The team which will be added
 	 */
 	public void addTeam(Team team) {
 		teams.put(team.getName(), team);
+		for (GameListener listener : Gami.getGameListeners()) {
+			listener.onTeamAdded(this, team);
+		}
+	}
+
+	/**
+	 * Remove a team from the game
+	 *
+	 * @param team The team which will be removed
+	 */
+	public void removeTeam(Team team) {
+		teams.remove(team.getName());
+		for (GameListener listener : Gami.getGameListeners()) {
+			listener.onTeamRemoved(this, team);
+		}
 	}
 
 	/**
