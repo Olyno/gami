@@ -1,7 +1,6 @@
 package com.olyno.gami.models;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 import com.olyno.gami.Gami;
@@ -57,10 +56,24 @@ public class Team extends GameManager {
 	}
 
     /**
+	 * Returns the list of points of a team
+	 * 
      * @return The points of the team
      */
     public LinkedList<Point> getPoints() {
         return points;
+	}
+	
+	/**
+	 * Returns the amount of points of a team
+	 * 
+     * @return The points of the team
+     */
+    public Integer getTotalPoints() {
+		return points
+			.stream()
+			.mapToInt(point -> point.getPoints())
+			.sum();
     }
 
     /**
