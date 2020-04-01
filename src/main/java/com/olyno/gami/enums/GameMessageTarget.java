@@ -14,12 +14,7 @@ public enum GameMessageTarget {
     /**
      * Only the player
      */
-    PLAYER("player", gameMessage -> gameMessage.getTarget().getName() == "player"),
-    
-    /**
-     * All players in a game when the timer begins
-     */
-    TIMER("timer", gameMessage -> gameMessage.getTarget().getName() == "timer");
+    PLAYER("player", gameMessage -> gameMessage.getTarget().getName() == "player");
 
     private Object value;
     private Predicate<GameMessage> filter;
