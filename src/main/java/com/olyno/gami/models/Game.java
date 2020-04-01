@@ -177,6 +177,15 @@ public class Game extends GameManager {
 	}
 
 	/**
+	 * Set the duration of the timer
+	 * 
+	 * @param time Duration of the timer
+	 */
+	public void setTimer(Integer time) {
+		this.timer = time;
+	}
+
+	/**
 	 * Returns which form the message should take,
 	 * Default: title
 	 * 
