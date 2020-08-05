@@ -17,7 +17,6 @@ public class Team extends GameManager {
      * Create a new team
 	 * 
      * @param name The name of the team
-	 * @param game The game of the team
      */
 	public Team(String name) {
 		super(name);

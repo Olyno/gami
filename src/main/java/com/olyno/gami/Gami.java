@@ -112,6 +112,7 @@ public class Gami {
 	 * Load a game from a file.
 	 * 
 	 * @param gameFile The path to the game file
+	 * @return The loaded game
 	 */
 	public Game loadGame(Path gameFile) {
 		if (Files.isRegularFile(gameFile)) {
@@ -146,7 +147,8 @@ public class Gami {
 	/**
 	 * Load multiple games from multiple files.
 	 * 
-	 * @param gameFile The list of game paths
+	 * @param gameFiles The list of game paths
+	 * @return The list of loaded games
 	 */
 	public LinkedList<Game> loadGame(List<Path> gameFiles) {
 		LinkedList<Game> gamesList = new LinkedList<>();
