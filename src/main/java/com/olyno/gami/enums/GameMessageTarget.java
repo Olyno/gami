@@ -1,35 +1,25 @@
 package com.olyno.gami.enums;
 
-import java.util.function.Predicate;
-
-import com.olyno.gami.models.GameMessage;
-
 public enum GameMessageTarget {
 
     /**
      * All players in the game or team of player
      */
-    GLOBAL("global", gameMessage -> gameMessage.getTarget().getName() == "global"),
+    GLOBAL("global"),
 
     /**
      * Only the player
      */
-    PLAYER("player", gameMessage -> gameMessage.getTarget().getName() == "player");
+    PLAYER("player");
 
     private Object value;
-    private Predicate<GameMessage> filter;
 
     public Object getName() { 
         return this.value; 
     }
 
-    public Predicate<GameMessage> getFilter() { 
-        return this.filter; 
-    }
-
-    private GameMessageTarget(Object value, Predicate<GameMessage> filter) {
+    private GameMessageTarget(Object value) {
         this.value = value;
-        this.filter = filter;
     }
 
 }

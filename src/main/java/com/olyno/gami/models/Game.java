@@ -1,14 +1,26 @@
 package com.olyno.gami.models;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.olyno.gami.Gami;
+import com.olyno.gami.enums.FileFormat;
 import com.olyno.gami.enums.GameMessageAs;
 import com.olyno.gami.enums.GameMessageTarget;
 import com.olyno.gami.enums.GameMessageType;
 import com.olyno.gami.enums.GameState;
 import com.olyno.gami.listeners.GameListener;
+
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 public class Game extends GameManager {
 
@@ -26,20 +38,16 @@ public class Game extends GameManager {
 		this.timer = 15;
 		this.timerMessageAs = GameMessageAs.TITLE;
 		this.teams = new HashMap<>();
-		this.messages.put(GameMessageType.JOIN, new ArrayList<GameMessage>());
-		this.messages.put(GameMessageType.LEAVE, new ArrayList<GameMessage>());
-		this.messages.put(GameMessageType.TIMER, new ArrayList<GameMessage>());
-		this.messages.put(GameMessageType.END, new ArrayList<GameMessage>());
-		this.messages.get(GameMessageType.TIMER).add(new GameTimerMessage(20, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
-		this.messages.get(GameMessageType.TIMER).add(new GameTimerMessage(15, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
+		this.getMessages(GameMessageType.TIMER).add(new GameTimerMessage(20, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
+		this.getMessages(GameMessageType.TIMER).add(new GameTimerMessage(15, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
 		for (int time = 1; time < 11; time ++) {
-			this.messages.get(GameMessageType.TIMER).add(new GameTimerMessage(time, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
+			this.getMessages(GameMessageType.TIMER).add(new GameTimerMessage(time, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
 		}
-		this.messages.get(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} joined the game!"));
-		this.messages.get(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.PLAYER, "You joined the game ${game}"));
-		this.messages.get(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} left the game!"));
-		this.messages.get(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.PLAYER, "You left the game ${game}"));
-		this.messages.get(GameMessageType.END).add(new GameMessage(GameMessageTarget.GLOBAL, "The ${game} game is finished! The winner is the ${winner} team!"));
+		this.getMessages(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} joined the game!"));
+		this.getMessages(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.PLAYER, "You joined the game ${game}"));
+		this.getMessages(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} left the game!"));
+		this.getMessages(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.PLAYER, "You left the game ${game}"));
+		this.getMessages(GameMessageType.END).add(new GameMessage(GameMessageTarget.GLOBAL, "The ${game} game is finished! The winner is the ${winner} team!"));
 		if (!Gami.getGames().containsKey(name)) {
 			Gami.getGames().put(name, this);
 			for (GameListener listener : Gami.getGameListeners()) {
@@ -75,6 +83,40 @@ public class Game extends GameManager {
 		Gami.getGames().remove(this.name);
 		for (GameListener listener : Gami.getGameListeners()) {
 			listener.onGameDeleted(this);
+		}
+	}
+
+	/**
+	 * Save a game as a file.
+	 * It includes all current players, spectators, teams, messages and all related stuff.
+	 * 
+	 * @param directory The directory where the file should be saved
+	 * @param format The format of the file (yaml, json...)
+	 */
+	public void save(Path directory, FileFormat format) {
+		if (Files.isDirectory(directory)) {
+			try {
+				Path gameFile = Paths.get(this.name + "." + format.name().toLowerCase());
+				String data;
+				switch (format) {
+					case YAML:
+						Yaml yaml = new Yaml(new Constructor(Game.class));
+						data = yaml.dump(this);
+						break;
+					case JSON:
+						Gson gson = new GsonBuilder().setPrettyPrinting().create();
+						data = gson.toJson(this);
+						break;
+					default:
+						throw new Error("This format doesn't exist: " + format);
+				}
+				Files.write(gameFile, Arrays.asList(data.split("\n")), StandardOpenOption.CREATE);
+				for (GameListener listener : Gami.getGameListeners()) {
+					listener.onGameSaved(this, directory, format);
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 
@@ -163,7 +205,7 @@ public class Game extends GameManager {
 	 *
 	 * @param world The world
 	 */
-	public void setWorld(Object world) {
+	public <T> void setWorld(T world) {
 		this.world = world;
 	}
 
@@ -223,9 +265,10 @@ public class Game extends GameManager {
 	}
 
 	@Override
-	public void addPlayer(Object player) {
+	@SuppressWarnings("unchecked")
+	public <T> void addPlayer(T player) {
 		if (!players.contains(player)) {
-			players.add(player);
+			((LinkedList<T>) players).add(player);
 			for (GameListener listener : Gami.getGameListeners()) {
 				if (players.size() == minPlayer) {
 					listener.onGameCanStart(this);
@@ -239,7 +282,7 @@ public class Game extends GameManager {
 	}
 
 	@Override
-	public void removePlayer(Object player) {
+	public <T> void removePlayer(T player) {
 		if (players.contains(player)) {
 			players.remove(player);
 			for (GameListener listener : Gami.getGameListeners()) {
@@ -249,9 +292,10 @@ public class Game extends GameManager {
 	}
 
 	@Override
-	public void addSpectator(Object player) {
+	@SuppressWarnings("unchecked")
+	public <T> void addSpectator(T player) {
 		if (!spectators.contains(player)) {
-			spectators.add(player);
+			((LinkedList<T>) this.spectators).add(player);
 			for (GameListener listener : Gami.getGameListeners()) {
 				listener.onSpectatorJoin(this, player);
 			}
@@ -259,7 +303,7 @@ public class Game extends GameManager {
 	}
 
 	@Override
-	public void removeSpectator(Object player) {
+	public <T> void removeSpectator(T player) {
 		if (spectators.contains(player)) {
 			spectators.remove(player);
 			for (GameListener listener : Gami.getGameListeners()) {

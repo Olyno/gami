@@ -1,5 +1,8 @@
 package com.olyno.gami.listeners;
 
+import java.nio.file.Path;
+
+import com.olyno.gami.enums.FileFormat;
 import com.olyno.gami.models.Game;
 import com.olyno.gami.models.Team;
 
@@ -18,6 +21,20 @@ public interface GameListener {
      * @param game The game deleted
      */
     public void onGameDeleted(Game game);
+
+    /**
+     * Triggered when a game is loaded from a file
+     * 
+     * @param game The game loaded
+     */
+    public void onGameLoaded(Game game, Path path, FileFormat format);
+
+    /**
+     * Triggered when a game is saved in a file
+     * 
+     * @param game The game saved
+     */
+    public void onGameSaved(Game game, Path path, FileFormat format);
 
     /**
      * Triggered when a game is is able to start

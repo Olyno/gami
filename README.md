@@ -13,8 +13,8 @@ public class YourProject {
 
     public void main(String[] args) {
         Game myFirstGame = new Game("myFirstGame");
-        Team redTeam = new Team("red", myFirstGame);
-        Team blueTeam = new Team("blue", myFirstGame);
+        Team redTeam = new Team("red");
+        Team blueTeam = new Team("blue");
         myFirstGame.start();
     }
 

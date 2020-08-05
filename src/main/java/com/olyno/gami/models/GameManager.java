@@ -11,16 +11,16 @@ import com.olyno.gami.enums.GameMessageType;
 
 public abstract class GameManager {
 
-	protected HashMap<GameMessageType, ArrayList<GameMessage>> messages;
-
 	protected String name;
 	protected String displayName;
 	protected Integer minPlayer;
 	protected Integer maxPlayer;
 	protected Object spawn;
 	protected Object lobby;
-	protected LinkedList<Object> players;
-	protected LinkedList<Object> spectators;
+	protected LinkedList<?> players;
+	protected LinkedList<?> spectators;
+
+	private HashMap<GameMessageType, ArrayList<? extends GameMessage>> messages;
 
 	public GameManager(String name) {
 		this.name = name;
@@ -110,8 +110,9 @@ public abstract class GameManager {
 	 * 
 	 * @return Lobby of your Game/Team
 	 */
-	public Object getLobby() {
-		return this.lobby;
+	@SuppressWarnings("unchecked")
+	public <T> T getLobby() {
+		return (T) this.lobby;
 	}
 
 	/**
@@ -120,7 +121,7 @@ public abstract class GameManager {
 	 *
 	 * @param lobby Lobby of your Game/Team
 	 */
-	public void setLobby(Object lobby) {
+	public <T> void setLobby(T lobby) {
 		this.lobby = lobby;
 	}
 
@@ -130,8 +131,9 @@ public abstract class GameManager {
 	 * 
 	 * @return The spawn of your Game/Team
 	 */
-	public Object getSpawn() {
-		return spawn;
+	@SuppressWarnings("unchecked")
+	public <T> T getSpawn() {
+		return (T) spawn;
 	}
 
 	/**
@@ -140,7 +142,7 @@ public abstract class GameManager {
 	 *
 	 * @param spawn The spawn of your Game/Team
 	 */
-	public void setSpawn(Object spawn) {
+	public <T> void setSpawn(T spawn) {
 		this.spawn = spawn;
 	}
 
@@ -149,8 +151,9 @@ public abstract class GameManager {
 	 * 
 	 * @return Players in your Game/Team
 	 */
-	public LinkedList<Object> getPlayers() {
-		return players;
+	@SuppressWarnings("unchecked")
+	public <T> LinkedList<T> getPlayers() {
+		return (LinkedList<T>) players;
 	}
 
 	/**
@@ -158,14 +161,14 @@ public abstract class GameManager {
 	 *
 	 * @param player The player who will join the Game/Team
 	 */
-	public abstract void addPlayer(Object player);
+	public abstract <T> void addPlayer(T player);
 
 	/**
 	 * Remove a player from your Game or Team
 	 *
 	 * @param player The player who will leave the Game/Team
 	 */
-	public abstract void removePlayer(Object player);
+	public abstract <T> void removePlayer(T player);
 
 	/**
 	 * Checks if a player is in the Game or Team
@@ -173,7 +176,7 @@ public abstract class GameManager {
 	 * @param player The player to check if he is in the Game/Team
 	 * @return If the player is in your Game/Team or not
 	 */
-	public Boolean hasPlayer(Object player) {
+	public <T> Boolean hasPlayer(T player) {
 		return players.contains(player);
 	}
 
@@ -182,8 +185,9 @@ public abstract class GameManager {
 	 * 
 	 * @return Spectators in your Game/Team
 	 */
-	public LinkedList<Object> getSpectators() {
-		return players;
+	@SuppressWarnings("unchecked")
+	public <T> LinkedList<T> getSpectators() {
+		return (LinkedList<T>) players;
 	}
 
 	/**
@@ -191,14 +195,14 @@ public abstract class GameManager {
 	 *
 	 * @param player The player who will spectate the Game/Team
 	 */
-	public abstract void addSpectator(Object player);
+	public abstract <T> void addSpectator(T player);
 
 	/**
 	 * Remove a spectator from your Game or Team
 	 *
 	 * @param player The player who will stop to spectate the Game/Team
 	 */
-	public abstract void removeSpectator(Object player);
+	public abstract <T> void removeSpectator(T player);
 
 	/**
 	 * Checks if a spectator is in the Game or Team
@@ -206,7 +210,7 @@ public abstract class GameManager {
 	 * @param player The spectator to check if he is in the Game/Team
 	 * @return If the spectator is in your Game/Team or not
 	 */
-	public Boolean hasSpectator(Object player) {
+	public <T> Boolean hasSpectator(T player) {
 		return players.contains(player);
 	}
 
@@ -218,24 +222,52 @@ public abstract class GameManager {
 	/**
 	 * All existing messages
 	 *
-	 * @return A hashmap of messages
+	 * @return A HashMap of messages
 	 */
-	public HashMap<GameMessageType, ArrayList<GameMessage>> getMessages() {
+	public HashMap<GameMessageType, ArrayList<? extends GameMessage>> getMessages() {
 		return messages;
+	}
+
+	/**
+	 * Add a message
+	 *
+	 * @param type The GameMessageType of the message
+	 * @param message The message
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends GameMessage> void addMessage(GameMessageType type, T message) {
+		if (this.messages.containsKey(type)) {
+			((ArrayList<T>) this.messages.get(type)).add(message);
+		} else {
+			ArrayList<T> messages = new ArrayList<>();
+			messages.add(message);
+			this.messages.put(type, messages);
+		}
+	}
+
+	/**
+	 * All existing messages from a type of message
+	 *
+	 * @param type Message type
+	 * @return An ArrayList of messages
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends GameMessage> ArrayList<T> getMessages(GameMessageType type) {
+		return (ArrayList<T>) this.getMessages().get(type);
 	}
 
 	/**
 	 * All existing messages filtered by a GameMessageTarget
 	 *
-	 * @return An ArrayList of filtered messages
+	 * @param type   Message type
+	 * @param target Message target
+	 * @return A List of filtered messages
 	 */
-	public ArrayList<GameMessage> getMessages(GameMessageType type, GameMessageTarget target) {
-		return new ArrayList<>(
-			messages.get(type)
-				.stream()
-				.filter(target.getFilter())
-				.collect(Collectors.toList())
-		);
+	public <T extends GameMessage> GameMessage getMessages(GameMessageType type, GameMessageTarget target) {
+		return messages.get(type)
+			.stream()
+			.filter(gameMessage -> gameMessage.getTarget() == target)
+			.collect(Collectors.toList()).get(0);
 	}
 
 }

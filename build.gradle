@@ -19,7 +19,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+    compile 'com.google.code.gson:gson:2.8.6'
+    compile 'org.yaml:snakeyaml:1.26'
     testImplementation 'junit:junit:4.12'
     // compile 'com.github.jcabi:jcabi-aspects:0.22.6'
 }

@@ -23,14 +23,14 @@ public class Team extends GameManager {
 		super(name);
         this.points = new LinkedList<Point>(Arrays.asList( new Point(0) ));
 		this.goal = 5;
-		this.messages.get(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} joined the ${team} team!"));
-		this.messages.get(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.PLAYER, "You joined the ${team} team!"));
-		this.messages.get(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} left the ${team} team!"));
-		this.messages.get(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.PLAYER, "You left the ${team} team!"));
-		this.messages.get(GameMessageType.WIN_POINT).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} scored a point for the ${team} team!"));
-		this.messages.get(GameMessageType.WIN_POINT).add(new GameMessage(GameMessageTarget.PLAYER, "You scored a point for your team!"));
-		this.messages.get(GameMessageType.LOSE_POINT).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} lost a point for the ${team} team"));
-		this.messages.get(GameMessageType.LOSE_POINT).add(new GameMessage(GameMessageTarget.PLAYER, "The opponent team won a point!"));
+		this.getMessages(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} joined the ${team} team!"));
+		this.getMessages(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.PLAYER, "You joined the ${team} team!"));
+		this.getMessages(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} left the ${team} team!"));
+		this.getMessages(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.PLAYER, "You left the ${team} team!"));
+		this.getMessages(GameMessageType.WIN_POINT).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} scored a point for the ${team} team!"));
+		this.getMessages(GameMessageType.WIN_POINT).add(new GameMessage(GameMessageTarget.PLAYER, "You scored a point for your team!"));
+		this.getMessages(GameMessageType.LOSE_POINT).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} lost a point for the ${team} team"));
+		this.getMessages(GameMessageType.LOSE_POINT).add(new GameMessage(GameMessageTarget.PLAYER, "The opponent team won a point!"));
 		for (TeamListener listener : Gami.getTeamListeners()) {
 			listener.onTeamCreated(this);
 		}
@@ -140,9 +140,10 @@ public class Team extends GameManager {
 	}
 
 	@Override
-	public void addPlayer(Object player) {
+	@SuppressWarnings("unchecked")
+	public <T> void addPlayer(T player) {
 		if (!players.contains(player)) {
-			players.add(player);
+			((LinkedList<T>) players).add(player);
 			for (TeamListener listener : Gami.getTeamListeners()) {
 				listener.onPlayerJoin(this, player);
 				if (minPlayer == players.size()) {
@@ -153,7 +154,7 @@ public class Team extends GameManager {
 	}
 
 	@Override
-	public void removePlayer(Object player) {
+	public <T> void removePlayer(T player) {
 		if (players.contains(player)) {
 			players.remove(player);
 			for (TeamListener listener : Gami.getTeamListeners()) {
@@ -164,9 +165,10 @@ public class Team extends GameManager {
 	}
 
 	@Override
-	public void addSpectator(Object player) {
+	@SuppressWarnings("unchecked")
+	public <T> void addSpectator(T player) {
 		if (!spectators.contains(player)) {
-			spectators.add(player);
+			((LinkedList<T>) spectators).add(player);
 			for (TeamListener listener : Gami.getTeamListeners()) {
 				listener.onSpectatorJoin(this, player);
 			}
@@ -174,7 +176,7 @@ public class Team extends GameManager {
 	}
 
 	@Override
-	public void removeSpectator(Object player) {
+	public <T> void removeSpectator(T player) {
 		if (spectators.contains(player)) {
 			spectators.remove(player);
 			for (TeamListener listener : Gami.getTeamListeners()) {
