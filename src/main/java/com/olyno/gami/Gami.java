@@ -114,7 +114,7 @@ public class Gami {
 	 * @param gameFile The path to the game file
 	 * @return The loaded game
 	 */
-	public Game loadGame(Path gameFile) {
+	public static Game loadGame(Path gameFile) {
 		if (Files.isRegularFile(gameFile)) {
 			try {
 				Game game;
@@ -150,7 +150,7 @@ public class Gami {
 	 * @param gameFiles The list of game paths
 	 * @return The list of loaded games
 	 */
-	public LinkedList<Game> loadGame(List<Path> gameFiles) {
+	public static LinkedList<Game> loadGames(List<Path> gameFiles) {
 		LinkedList<Game> gamesList = new LinkedList<>();
 		for (Path gameFile : gameFiles) {
 			gamesList.add(loadGame(gameFile));
