@@ -259,15 +259,16 @@ public abstract class GameManager {
 	/**
 	 * All existing messages filtered by a GameMessageTarget
 	 *
-	 * @param type   Message type
+	 * @param type Message type
 	 * @param target Message target
 	 * @return A List of filtered messages
 	 */
-	public <T extends GameMessage> GameMessage getMessages(GameMessageType type, GameMessageTarget target) {
-		return messages.get(type)
+	@SuppressWarnings("unchecked")
+	public <T extends GameMessage> ArrayList<T> getMessages(GameMessageType type, GameMessageTarget target) {
+		return (ArrayList<T>) messages.get(type)
 			.stream()
 			.filter(gameMessage -> gameMessage.getTarget() == target)
-			.collect(Collectors.toList()).get(0);
+			.collect(Collectors.toList());
 	}
 
 }
