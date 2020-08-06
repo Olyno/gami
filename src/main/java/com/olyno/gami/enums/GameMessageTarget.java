@@ -5,21 +5,11 @@ public enum GameMessageTarget {
     /**
      * All players in the game or team of player
      */
-    GLOBAL("global"),
+    GLOBAL,
 
     /**
      * Only the player
      */
-    PLAYER("player");
-
-    private Object value;
-
-    public Object getName() { 
-        return this.value; 
-    }
-
-    private GameMessageTarget(Object value) {
-        this.value = value;
-    }
+    PLAYER
 
 }
