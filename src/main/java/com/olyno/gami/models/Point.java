@@ -11,7 +11,7 @@ public class Point {
         this.advantage = points;
     }
 
-    public Point( Integer points, Object author ) {
+    public <T> Point( Integer points, T author ) {
         this.points = points;
         this.advantage = points;
         this.author = author;
@@ -63,7 +63,7 @@ public class Point {
      *
      * @param author The player who scored the point
      */
-    public void setAuthor( Object author ) {
+    public <T> void setAuthor( T author ) {
         this.author = author;
     }
 
