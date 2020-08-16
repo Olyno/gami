@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
@@ -77,18 +78,18 @@ public class Gami {
 	 * @param player The player that we need to know the game where he is.
 	 * @return The game where is the player
 	 */
-	public static <T> Game getGameOfPlayer(T player) {
+	public static <T> Optional<Game> getGameOfPlayer(T player) {
 		for (Game game : getGames().values()) {
 			for (Team team : game.getTeams().values()) {
 				if (team.hasPlayer(player)) {
-					return game;
+					return Optional.of(game);
 				}
 			}
 			if (game.hasPlayer(player)) {
-				return game;
+				return Optional.of(game);
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
     /**
@@ -97,15 +98,15 @@ public class Gami {
 	 * @param player The player that we need to know the team where he is.
 	 * @return The team where is the player
 	 */
-	public static <T> Team getTeamOfPlayer(T player) {
+	public static <T> Optional<Team> getTeamOfPlayer(T player) {
 		for (Game game : getGames().values()) {
 			for (Team team : game.getTeams().values()) {
 				if (team.hasPlayer(player)) {
-					return team;
+					return Optional.of(team);
 				}
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class Gami {
 	 * @param gameFile The path to the game file
 	 * @return The loaded game
 	 */
-	public static Game loadGame(Path gameFile) {
+	public static Optional<Game> loadGame(Path gameFile) {
 		if (Files.isRegularFile(gameFile)) {
 			try {
 				Game game;
@@ -136,12 +137,12 @@ public class Gami {
 				for (GameListener listener : getGameListeners()) {
 					listener.onGameLoaded(game, gameFile, format);
 				}
-				return game;
+				return Optional.of(game);
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
@@ -151,18 +152,16 @@ public class Gami {
 	 * @return The list of loaded games
 	 */
 	public static LinkedList<Game> loadGames(List<Path> gameFiles) {
-		LinkedList<Game> gamesList = new LinkedList<>();
+		LinkedList<Optional<Game>> gamesList = new LinkedList<>();
 		for (Path gameFile : gameFiles) {
 			gamesList.add(loadGame(gameFile));
 		}
 		List<Game> notNullList = gamesList
 			.stream()
-			.filter(game -> game != null)
+			.filter(Optional::isPresent)
+			.map(Optional::get)
 			.collect(Collectors.toList());
-		if (notNullList.size() == 0) {
-			return new LinkedList<>();
-		}
-		return gamesList;
+		return new LinkedList<>(notNullList);
 	}
 
 }

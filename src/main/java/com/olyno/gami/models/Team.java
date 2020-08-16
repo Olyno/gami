@@ -2,6 +2,7 @@ package com.olyno.gami.models;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import com.olyno.gami.Gami;
 import com.olyno.gami.enums.GameMessageTarget;
@@ -129,13 +130,13 @@ public class Team extends GameManager {
 	 *
 	 * @return The game of the Team
 	 */
-	public Game getGame() {
+	public Optional<Game> getGame() {
 		for (Game game : Gami.getGames().values()) {
 			if (game.getTeams().containsValue(this)) {
-				return game;
+				return Optional.of(game);
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
@@ -186,9 +187,11 @@ public class Team extends GameManager {
 
 	@Override
 	public void delete() {
-		getGame().getTeams().remove(this.getName());
-		for (TeamListener listener : Gami.getTeamListeners()) {
-			listener.onTeamDeleted(this);
+		if (getGame().isPresent()) {
+			getGame().get().getTeams().remove(this.getName());
+			for (TeamListener listener : Gami.getTeamListeners()) {
+				listener.onTeamDeleted(this);
+			}
 		}
 	}
 
