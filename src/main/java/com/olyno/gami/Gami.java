@@ -1,6 +1,7 @@
 package com.olyno.gami;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -121,7 +122,7 @@ public class Gami {
 				Game game;
 				String extension = gameFile.getFileName().toString().split(".")[1].toUpperCase();
 				FileFormat format = FileFormat.valueOf(extension);
-				String content = Files.readString(gameFile);
+				String content = String.join("\n", Files.readAllLines(gameFile, StandardCharsets.UTF_8));
 				switch (format) {
 					case YAML:
 						Yaml yaml = new Yaml(new Constructor(Game.class));
