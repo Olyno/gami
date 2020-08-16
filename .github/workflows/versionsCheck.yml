@@ -1,4 +1,4 @@
-name: Build and Deploy Documentation
+name: Version check
 
 on: [pull_request, push]
 
@@ -14,7 +14,7 @@ jobs:
     name: Java check version ${{ matrix.java_version }}
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       - name: Setup JDK
         uses: actions/setup-java@v1
@@ -22,4 +22,4 @@ jobs:
           java-version: ${{ matrix.java_version }}
 
       - name: Build
-        run: gradlew shadowjar
+        run: gradle shadowjar
