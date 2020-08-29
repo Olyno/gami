@@ -23,6 +23,20 @@ public interface GameListener {
     public void onGameDeleted(Game game);
 
     /**
+     * Triggered when a session for a game is created
+     * 
+     * @param game The session created
+     */
+    public void onSessionCreated(Game game);
+
+    /**
+     * Triggered when a session for a game is deleted
+     * 
+     * @param game The session deleted
+     */
+    public void onSessionDeleted(Game game);
+
+    /**
      * Triggered when a game is loaded from a file
      * 
      * @param game The game loaded

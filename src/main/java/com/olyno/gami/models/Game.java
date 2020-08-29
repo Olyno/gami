@@ -5,9 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,6 +28,7 @@ public class Game extends GameManager {
 
 	private HashMap<String, Team> teams;
 	private GameMessageAs timerMessageAs;
+	private ArrayList<Game> sessions;
 
 	private GameState state;
 	private Integer timer;
@@ -38,16 +41,25 @@ public class Game extends GameManager {
 		this.timer = 15;
 		this.timerMessageAs = GameMessageAs.TITLE;
 		this.teams = new HashMap<>();
-		this.getMessages(GameMessageType.TIMER).add(new GameTimerMessage(20, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
-		this.getMessages(GameMessageType.TIMER).add(new GameTimerMessage(15, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
-		for (int time = 1; time < 11; time ++) {
-			this.getMessages(GameMessageType.TIMER).add(new GameTimerMessage(time, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
+		this.sessions = new ArrayList<>();
+		this.getMessages(GameMessageType.TIMER)
+				.add(new GameTimerMessage(20, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
+		this.getMessages(GameMessageType.TIMER)
+				.add(new GameTimerMessage(15, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
+		for (int time = 1; time < 11; time++) {
+			this.getMessages(GameMessageType.TIMER)
+					.add(new GameTimerMessage(time, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
 		}
-		this.getMessages(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} joined the game!"));
-		this.getMessages(GameMessageType.JOIN).add(new GameMessage(GameMessageTarget.PLAYER, "You joined the game ${game}"));
-		this.getMessages(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.GLOBAL, "${player} left the game!"));
-		this.getMessages(GameMessageType.LEAVE).add(new GameMessage(GameMessageTarget.PLAYER, "You left the game ${game}"));
-		this.getMessages(GameMessageType.END).add(new GameMessage(GameMessageTarget.GLOBAL, "The ${game} game is finished! The winner is the ${winner} team!"));
+		this.getMessages(GameMessageType.JOIN)
+				.add(new GameMessage(GameMessageTarget.GLOBAL, "${player} joined the game!"));
+		this.getMessages(GameMessageType.JOIN)
+				.add(new GameMessage(GameMessageTarget.PLAYER, "You joined the game ${game}"));
+		this.getMessages(GameMessageType.LEAVE)
+				.add(new GameMessage(GameMessageTarget.GLOBAL, "${player} left the game!"));
+		this.getMessages(GameMessageType.LEAVE)
+				.add(new GameMessage(GameMessageTarget.PLAYER, "You left the game ${game}"));
+		this.getMessages(GameMessageType.END).add(new GameMessage(GameMessageTarget.GLOBAL,
+				"The ${game} game is finished! The winner is the ${winner} team!"));
 		if (!Gami.getGames().containsKey(name)) {
 			Gami.getGames().put(name, this);
 			for (GameListener listener : Gami.getGameListeners()) {
@@ -87,11 +99,11 @@ public class Game extends GameManager {
 	}
 
 	/**
-	 * Save a game as a file.
-	 * It includes all current players, spectators, teams, messages and all related stuff.
+	 * Save a game as a file. It includes all current players, spectators, teams,
+	 * messages and all related stuff.
 	 * 
 	 * @param directory The directory where the file should be saved
-	 * @param format The format of the file (yaml, json...)
+	 * @param format    The format of the file (yaml, json...)
 	 */
 	public void save(Path directory, FileFormat format) {
 		if (Files.isDirectory(directory)) {
@@ -228,8 +240,7 @@ public class Game extends GameManager {
 	}
 
 	/**
-	 * Returns which form the message should take,
-	 * Default: title
+	 * Returns which form the message should take, Default: title
 	 * 
 	 * @return The timer message type
 	 */
@@ -262,6 +273,61 @@ public class Game extends GameManager {
 	 */
 	public void setWinner(Team winner) {
 		this.winner = winner;
+	}
+
+	/**
+	 * Returns all existing sessions for this game
+	 * 
+	 * @return All sessions of the game
+	 */
+	public ArrayList<Game> getSessions() {
+		return sessions;
+	}
+
+	/**
+	 * Returns a specific game session from its id. Can be empty if the id is wrong or out of the range.
+	 * 
+	 * @return The session with its id
+	 */
+	public Optional<Game> getSession(Integer id) {
+		if (sessions.size() >= id + 1) {
+			return Optional.of(sessions.get(id));
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Create a new session for this game It's simply a copy of the game to host the
+	 * same game multiple times. Can be an empty optional if the session creation fail.
+	 *
+	 * @return The created session
+	 */
+	public Optional<Game> createSession() {
+		try {
+			Game clonedGame = (Game) this.clone();
+			sessions.add(clonedGame);
+			for (GameListener listener : Gami.getGameListeners()) {
+				listener.onSessionCreated(clonedGame);
+			}
+			return Optional.of(clonedGame);
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Delete an exisiting session for this game
+	 *
+	 * @return The deleted session
+	 */
+	public Game deleteSession(Integer id) {
+		Game deletedGame = sessions.get(id);
+		sessions.remove(id);
+		for (GameListener listener : Gami.getGameListeners()) {
+			listener.onSessionDeleted(deletedGame);
+		}
+		return deletedGame;
 	}
 
 	@Override
