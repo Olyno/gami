@@ -43,23 +43,23 @@ public class Game extends GameManager {
 		this.teams = new HashMap<>();
 		this.sessions = new ArrayList<>();
 		this.getMessages(GameMessageType.TIMER)
-				.add(new GameTimerMessage(20, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
+			.add(new GameTimerMessage(20, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
 		this.getMessages(GameMessageType.TIMER)
-				.add(new GameTimerMessage(15, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
+			.add(new GameTimerMessage(15, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
 		for (int time = 1; time < 11; time++) {
 			this.getMessages(GameMessageType.TIMER)
-					.add(new GameTimerMessage(time, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
+				.add(new GameTimerMessage(time, GameMessageTarget.GLOBAL, "Game starts in ${time} seconds"));
 		}
 		this.getMessages(GameMessageType.JOIN)
-				.add(new GameMessage(GameMessageTarget.GLOBAL, "${player} joined the game!"));
+			.add(new GameMessage(GameMessageTarget.GLOBAL, "${player} joined the game!"));
 		this.getMessages(GameMessageType.JOIN)
-				.add(new GameMessage(GameMessageTarget.PLAYER, "You joined the game ${game}"));
+			.add(new GameMessage(GameMessageTarget.PLAYER, "You joined the game ${game}"));
 		this.getMessages(GameMessageType.LEAVE)
-				.add(new GameMessage(GameMessageTarget.GLOBAL, "${player} left the game!"));
+			.add(new GameMessage(GameMessageTarget.GLOBAL, "${player} left the game!"));
 		this.getMessages(GameMessageType.LEAVE)
-				.add(new GameMessage(GameMessageTarget.PLAYER, "You left the game ${game}"));
+			.add(new GameMessage(GameMessageTarget.PLAYER, "You left the game ${game}"));
 		this.getMessages(GameMessageType.END).add(new GameMessage(GameMessageTarget.GLOBAL,
-				"The ${game} game is finished! The winner is the ${winner} team!"));
+			"The ${game} game is finished! The winner is the ${winner} team!"));
 		if (!Gami.getGames().containsKey(name)) {
 			Gami.getGames().put(name, this);
 			for (GameListener listener : Gami.getGameListeners()) {
@@ -334,15 +334,19 @@ public class Game extends GameManager {
 	@SuppressWarnings("unchecked")
 	public <T> void addPlayer(T player) {
 		if (!players.contains(player)) {
-			((LinkedList<T>) players).add(player);
-			for (GameListener listener : Gami.getGameListeners()) {
-				if (players.size() == minPlayer) {
-					listener.onGameCanStart(this);
+			if (players.size() < maxPlayer) {
+				((LinkedList<T>) players).add(player);
+				for (GameListener listener : Gami.getGameListeners()) {
+					if (players.size() == minPlayer) {
+						listener.onGameCanStart(this);
+					}
+					if (players.size() == maxPlayer) {
+						listener.onGameReady(this);
+					}
+					listener.onPlayerJoin(this, player);
 				}
-				if (players.size() == maxPlayer) {
-					listener.onGameReady(this);
-				}
-				listener.onPlayerJoin(this, player);
+			} else if (spectators.size() < maxSpectator) {
+				addSpectator(player);
 			}
 		}
 	}

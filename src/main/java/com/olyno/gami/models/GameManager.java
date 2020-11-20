@@ -15,6 +15,7 @@ public abstract class GameManager {
 	protected String displayName;
 	protected Integer minPlayer;
 	protected Integer maxPlayer;
+	protected Integer maxSpectator;
 	protected Object spawn;
 	protected Object lobby;
 	protected LinkedList<?> players;
@@ -27,6 +28,7 @@ public abstract class GameManager {
 		this.displayName = name;
 		this.minPlayer = 1;
 		this.maxPlayer = 2;
+		this.maxSpectator = 0;
 		this.players = new LinkedList<>();
 		this.spectators = new LinkedList<>();
 		this.messages = new HashMap<>();
@@ -102,6 +104,24 @@ public abstract class GameManager {
 	 */
 	public void setMaxPlayer(Integer maxPlayer) {
 		this.maxPlayer = maxPlayer;
+	}
+
+	/**
+	 * Returns the maximum of spectator that can spectate your Game/Team
+	 * 
+	 * @return The maximum of spectator in your Game/Team
+	 */
+	public Integer getMaxSpectator() {
+		return maxSpectator;
+	}
+
+	/**
+	 * Set the maximum of spectator that can spectate your Game/Team
+	 * 
+	 * @param maxSpectator The maximum of Spectator that can spectate your Game/Team
+	 */
+	public void setMaxSpectator(Integer maxSpectator) {
+		this.maxSpectator = maxSpectator;
 	}
 
 	/**
@@ -253,7 +273,7 @@ public abstract class GameManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends GameMessage> ArrayList<T> getMessages(GameMessageType type) {
-		return (ArrayList<T>) this.getMessages().get(type);
+		return (ArrayList<T>) this.getMessages().getOrDefault(type, new ArrayList<T>());
 	}
 
 	/**
@@ -265,7 +285,7 @@ public abstract class GameManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends GameMessage> ArrayList<T> getMessages(GameMessageType type, GameMessageTarget target) {
-		return (ArrayList<T>) messages.get(type)
+		return (ArrayList<T>) messages.getOrDefault(type, new ArrayList<T>())
 			.stream()
 			.filter(gameMessage -> gameMessage.getTarget() == target)
 			.collect(Collectors.toList());

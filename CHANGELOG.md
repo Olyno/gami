@@ -1,12 +1,13 @@
 # Gami changelog
 
-## 0.1.1
+## 0.2.0
 
 **\/!\\ Breaking changes \/!\\**
 
  * Messages api has changed completely. Please have a look in the new one.
  * Interfaces are now called "enum", that makes more sense.
  * Games and Teams accept custom types using generics
+ * Adding a player to a game or a team will automatically place him as spectator if the game or the team is full.
 
 ### Enums
 
@@ -26,10 +27,18 @@
  * ``GameManager``, ``Game`` and ``Team``: Messages format changed. Please have a look in ``GameMessage`` model.
    * Added a ``getMessages(GameMessageTarget)`` method: Returns a filtered list of ``GameMessage`` by ``GameMessageTarget``.
    * Added a ``getMessages()`` method: Returns the list of ``GameMessage`` of the ``Game`` or the ``Team``.
+   * Added a ``getMaxSpectator()`` method: Returns the maximum of spectator in the ``Game`` or the ``Team``.
+   * Added a ``setMaxSpectator(Integer)`` method: Set the maximum of spectator in the ``Game`` or the ``Team``.
  * ``Game``:
+   * Added a ``addSpectator(Player)`` method: Add a spectator to the game.
+   * Added a ``removeSpectator(Player)`` method: Remove a spectator from the game.
    * Added a ``removeTeam(Team)`` method: Remove a team from a game.
    * Added a ``setTimer(Integer)`` method: Define duration of the timer, before the game starts.
    * Added a ``save(Path, FileFormat)`` method: Save a game in a file.
+   * Added a ``createSession()`` method: Create a copy of this game.
+   * Added a ``deleteSession(String)`` method: Delete a game session from its id.
+   * Added a ``getSession(String)`` method: Get a game session from its id.
+   * Added a ``getSessions()`` method: Get all game sessions.
  * ``Team``:
    * Added a ``getGame()`` method: Returns the ``Game`` of the ``Team``. 
    * Added a ``getTotalPoints()`` method: Returns the amount of points as ``Integer``.
@@ -39,10 +48,17 @@
 ### Listeners
 
  * ``GameListener``:
+   * Added ``onSessionCreated`` event
+   * Added ``onSessionDeleted`` event
    * Added ``onGameSaved`` event
    * Added ``onGameLoaded`` event
    * Added ``onTeamAdded`` event
    * Added ``OnTeamRemoved`` event
+
+### Fix
+
+  * ``GameManager``:
+    * Fix ``getMessages`` methods: Returns an ``ArrayList`` by default.
 
 ## 0.1.0
 
