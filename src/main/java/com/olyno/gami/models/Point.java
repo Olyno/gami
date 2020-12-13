@@ -17,6 +17,20 @@ public class Point {
         this.author = author;
     }
 
+    @Override
+	public boolean equals(Object o) {
+		if (o == null) return false;
+		if (o == this) return true;
+		if (!(o instanceof Point)) return false;
+		Point point = (Point) o;
+		return point.getPoints() == this.getPoints();
+	}
+
+	@Override
+	public int hashCode() {
+		return points.hashCode();
+	}
+
     /**
      * @return Points of the team
      */

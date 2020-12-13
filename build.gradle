@@ -2,7 +2,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java-library'
-    id 'maven'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
 }
 
@@ -14,23 +13,18 @@ repositories {
     mavenCentral()
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url 'https://oss.sonatype.org/content/groups/public/' }
-    maven { url 'https://repo.destroystokyo.com/repository/maven-public/' }
-    maven { url 'http://maven.sk89q.com/repo' }
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    compile 'com.google.code.gson:gson:2.8.6'
-    compile 'org.yaml:snakeyaml:1.26'
-    testImplementation 'junit:junit:4.12'
+    testImplementation platform('org.junit:junit-bom:5.7.0')
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'org.yaml:snakeyaml:1.26'
 }
 
 processResources {
     filter(ReplaceTokens, tokens: [version: version])
-}
-
-shadowJar {
-    configurations = [project.configurations.compile]
 }
 
 jar {
@@ -47,3 +41,12 @@ javadoc {
 artifacts {
     archives shadowJar
 }
+
+test {
+	useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+}
+
+tasks.shadowJar.dependsOn(test)

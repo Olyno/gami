@@ -2,8 +2,7 @@ package com.olyno.gami.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.regex.Pattern;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.olyno.gami.enums.GameMessageTarget;
@@ -18,8 +17,8 @@ public abstract class GameManager {
 	protected Integer maxSpectator;
 	protected Object spawn;
 	protected Object lobby;
-	protected LinkedList<?> players;
-	protected LinkedList<?> spectators;
+	protected ArrayList<Object> players;
+	protected ArrayList<Object> spectators;
 
 	private HashMap<GameMessageType, ArrayList<? extends GameMessage>> messages;
 
@@ -29,8 +28,8 @@ public abstract class GameManager {
 		this.minPlayer = 1;
 		this.maxPlayer = 2;
 		this.maxSpectator = 0;
-		this.players = new LinkedList<>();
-		this.spectators = new LinkedList<>();
+		this.players = new ArrayList<>();
+		this.spectators = new ArrayList<>();
 		this.messages = new HashMap<>();
 	}
 
@@ -49,7 +48,7 @@ public abstract class GameManager {
 	 * @param name The name of your Game/Team
 	 */
 	public void setName(String name) {
-		this.name = Pattern.compile("^\\S[a-z0-9]+").matcher(name).find() ? name : this.name;
+		this.name = Objects.requireNonNull(name, "A name can't be null!");
 	}
 
 	/**
@@ -100,7 +99,8 @@ public abstract class GameManager {
 	/**
 	 * Set the maximum of player that your Game/Team require before start
 	 * 
-	 * @param maxPlayer The maximum of player that your Game/Team require before start
+	 * @param maxPlayer The maximum of player that your Game/Team require before
+	 *                  start
 	 */
 	public void setMaxPlayer(Integer maxPlayer) {
 		this.maxPlayer = maxPlayer;
@@ -125,8 +125,8 @@ public abstract class GameManager {
 	}
 
 	/**
-	 * Returns lobby of your Game/Team,
-	 * Where players spawn for the first time for teams and where players are before join your game.
+	 * Returns lobby of your Game/Team, Where players spawn for the first time for
+	 * teams and where players are before join your game.
 	 * 
 	 * @return Lobby of your Game/Team
 	 */
@@ -136,8 +136,8 @@ public abstract class GameManager {
 	}
 
 	/**
-	 * Set the location of the lobby of your Game/Team.
-	 * Where players spawn for the first time for teams and where players are before join your game.
+	 * Set the location of the lobby of your Game/Team. Where players spawn for the
+	 * first time for teams and where players are before join your game.
 	 *
 	 * @param lobby Lobby of your Game/Team
 	 */
@@ -146,8 +146,8 @@ public abstract class GameManager {
 	}
 
 	/**
-	 * Returns the spawn of your Game/Team,
-	 * Where players are when they respawn for teams and where players spawn when game started
+	 * Returns the spawn of your Game/Team, Where players are when they respawn for
+	 * teams and where players spawn when game started
 	 * 
 	 * @return The spawn of your Game/Team
 	 */
@@ -157,8 +157,8 @@ public abstract class GameManager {
 	}
 
 	/**
-	 * Set the location of the spawn of your Game/Team,
-	 * Where players are when they respawn for teams and where players spawn when game started.
+	 * Set the location of the spawn of your Game/Team, Where players are when they
+	 * respawn for teams and where players spawn when game started.
 	 *
 	 * @param spawn The spawn of your Game/Team
 	 */
@@ -172,8 +172,8 @@ public abstract class GameManager {
 	 * @return Players in your Game/Team
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> LinkedList<T> getPlayers() {
-		return (LinkedList<T>) players;
+	public <T> ArrayList<T> getPlayers() {
+		return (ArrayList<T>) players;
 	}
 
 	/**
@@ -206,8 +206,8 @@ public abstract class GameManager {
 	 * @return Spectators in your Game/Team
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> LinkedList<T> getSpectators() {
-		return (LinkedList<T>) players;
+	public <T> ArrayList<T> getSpectators() {
+		return (ArrayList<T>) spectators;
 	}
 
 	/**
@@ -231,7 +231,7 @@ public abstract class GameManager {
 	 * @return If the spectator is in your Game/Team or not
 	 */
 	public <T> Boolean hasSpectator(T player) {
-		return players.contains(player);
+		return spectators.contains(player);
 	}
 
 	/**
@@ -251,7 +251,7 @@ public abstract class GameManager {
 	/**
 	 * Add a message
 	 *
-	 * @param type The GameMessageType of the message
+	 * @param type    The GameMessageType of the message
 	 * @param message The message
 	 */
 	@SuppressWarnings("unchecked")
@@ -273,22 +273,20 @@ public abstract class GameManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends GameMessage> ArrayList<T> getMessages(GameMessageType type) {
-		return (ArrayList<T>) this.getMessages().getOrDefault(type, new ArrayList<T>());
+		return (ArrayList<T>) this.messages.getOrDefault(type, new ArrayList<T>());
 	}
 
 	/**
 	 * All existing messages filtered by a GameMessageTarget
 	 *
-	 * @param type Message type
+	 * @param type   Message type
 	 * @param target Message target
 	 * @return A List of filtered messages
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends GameMessage> ArrayList<T> getMessages(GameMessageType type, GameMessageTarget target) {
-		return (ArrayList<T>) messages.getOrDefault(type, new ArrayList<T>())
-			.stream()
-			.filter(gameMessage -> gameMessage.getTarget() == target)
-			.collect(Collectors.toList());
+		return (ArrayList<T>) messages.getOrDefault(type, new ArrayList<T>()).stream()
+				.filter(gameMessage -> gameMessage.getTarget() == target).collect(Collectors.toList());
 	}
 
 }

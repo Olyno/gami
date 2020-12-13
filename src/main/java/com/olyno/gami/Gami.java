@@ -5,10 +5,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
@@ -21,14 +21,17 @@ import com.olyno.gami.models.Team;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
+/**
+ * The "global" class, with a lot of utils and global methods.
+ */
 public class Gami {
 
-    private static HashMap<String, Game> games = new HashMap<>();
+    private static ArrayList<Game> games = new ArrayList<>();
     private static ArrayList<GameListener> gameListeners = new ArrayList<>();
     private static ArrayList<TeamListener> teamListeners = new ArrayList<>();
 
     /**
-	 * Register a listener to get Game events
+	 * Register a listener to get Game events.
 	 * 
 	 * @param listener Game listener
 	 */
@@ -37,7 +40,7 @@ public class Gami {
     }
     
     /**
-	 * Register a listener to get Team events
+	 * Register a listener to get Team events.
 	 * 
 	 * @param listener Team listener
 	 */
@@ -47,7 +50,7 @@ public class Gami {
 
 
     /**
-     * Returns the list of Game listeners
+     * Returns the list of Game listeners.
      * 
      * @return Game listeners
      */
@@ -56,7 +59,7 @@ public class Gami {
     }
     
     /**
-     * Returns the list of Team listeners
+     * Returns the list of Team listeners.
      * 
      * @return Team listeners
      */
@@ -65,14 +68,45 @@ public class Gami {
     }
 
     /**
-     * Returns A hashmap of all existing games
+     * Returns an ArrayList of all existing games.
      * 
 	 * @return Existing games
 	 */
-	public static HashMap<String, Game> getGames() {
+	public static ArrayList<Game> getGames() {
 		return games;
 	}
 
+	/**
+     * Returns a list of games dependening of a filter.
+     * 
+	 * @param filter The function which will filter values
+	 * @return A list of games dependening of a filter
+	 */
+	public static ArrayList<Game> getGamesByFilter(Predicate<? super Game> filter) {
+		List<Game> gamesFound = games.stream().filter(filter).collect(Collectors.toList()); 
+		return new ArrayList<Game>(gamesFound);
+	}
+
+	/**
+     * Returns the first game which match with the filter.
+     * 
+	 * @param filter The function which will filter values
+	 * @return The first game which match with the filter
+	 */
+	public static Optional<Game> getGameByFilter(Predicate<? super Game> filter) {
+		return games.stream().filter(filter).findFirst();
+	}
+
+	/**
+     * Returns the first game found with the target name.
+     * 
+	 * @param gameName The name of the target game
+	 * @return The first game found with the target name
+	 */
+	public static Optional<Game> getGameByName(String gameName) {
+		return games.stream().filter(game -> game.getName().equals(gameName)).findFirst();
+	}
+	
     /**
 	 * Returns the game where the player is.
 	 *
@@ -80,8 +114,8 @@ public class Gami {
 	 * @return The game where is the player
 	 */
 	public static <T> Optional<Game> getGameOfPlayer(T player) {
-		for (Game game : getGames().values()) {
-			for (Team team : game.getTeams().values()) {
+		for (Game game : games) {
+			for (Team team : game.getTeams()) {
 				if (team.hasPlayer(player)) {
 					return Optional.of(game);
 				}
@@ -100,8 +134,8 @@ public class Gami {
 	 * @return The team where is the player
 	 */
 	public static <T> Optional<Team> getTeamOfPlayer(T player) {
-		for (Game game : getGames().values()) {
-			for (Team team : game.getTeams().values()) {
+		for (Game game : games) {
+			for (Team team : game.getTeams()) {
 				if (team.hasPlayer(player)) {
 					return Optional.of(team);
 				}
@@ -134,7 +168,7 @@ public class Gami {
 					default:
 						throw new Error("This format doesn't exist: " + format);
 				}
-				Gami.getGames().put(game.getName(), game);
+				games.add(game);
 				for (GameListener listener : getGameListeners()) {
 					listener.onGameLoaded(game, gameFile, format);
 				}
