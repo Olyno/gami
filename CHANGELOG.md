@@ -76,6 +76,10 @@
     * Fix ``spectators`` methods: Used ``players`` property instead of ``spectators``.
     * Fix array list comparaison by overriding the ``equals`` method.
 
+### New
+
+ * Added ``GameTest`` and ``TeamTest`` to test features and have a good start for something stable.
+
 ## 0.1.0
 
 ### Interfaces
