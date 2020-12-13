@@ -40,6 +40,8 @@ public interface GameListener {
      * Triggered when a game is loaded from a file
      * 
      * @param game The game loaded
+     * @param path The path where the game has been loaded
+     * @param format The format of the game (yaml, json...)
      */
     public void onGameLoaded(Game game, Path path, FileFormat format);
 
@@ -47,6 +49,8 @@ public interface GameListener {
      * Triggered when a game is saved in a file
      * 
      * @param game The game saved
+     * @param path The path where the game has been saved
+     * @param format The format of the game (yaml, json...)
      */
     public void onGameSaved(Game game, Path path, FileFormat format);
 

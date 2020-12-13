@@ -111,6 +111,7 @@ public class Gami {
 	 * Returns the game where the player is.
 	 *
 	 * @param player The player that we need to know the game where he is.
+	 * @param <T> The player type
 	 * @return The game where is the player
 	 */
 	public static <T> Optional<Game> getGameOfPlayer(T player) {
@@ -131,6 +132,7 @@ public class Gami {
 	 * Returns the team where the player is.
 	 *
 	 * @param player The player that we need to know the team where he is.
+	 * @param <T> The player type
 	 * @return The team where is the player
 	 */
 	public static <T> Optional<Team> getTeamOfPlayer(T player) {

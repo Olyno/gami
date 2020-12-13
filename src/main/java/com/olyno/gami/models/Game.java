@@ -224,6 +224,7 @@ public class Game extends GameManager implements Cloneable {
 	/**
      * Returns a list of teams dependening of a filter.
      * 
+	 * @param filter The filter to apply to find a teams list
 	 * @return A list of teams dependening of a filter
 	 */
 	public ArrayList<Team> getTeamsByFilter(Predicate<? super Team> filter) {
@@ -234,6 +235,7 @@ public class Game extends GameManager implements Cloneable {
 	/**
      * Returns the first team which match with the filter.
      * 
+	 * @param filter The filter to apply to find a team
 	 * @return The first team which match with the filter
 	 */
 	public Optional<Team> getTeamByFilter(Predicate<? super Team> filter) {
@@ -243,7 +245,7 @@ public class Game extends GameManager implements Cloneable {
 	/**
 	 * Returns a team from its name
 	 *
-	 * @param team The name of the team which will be return
+	 * @param teamName The name of the team which will be return
 	 * @return Team with the same name
 	 */
 	public Optional<Team> getTeamByName(String teamName) {
@@ -254,7 +256,7 @@ public class Game extends GameManager implements Cloneable {
 	 * Add a team to the game
 	 * Add the team in the list only if it already doesn't exist.
 	 *
-	 * @param team The team which will be added
+	 * @param teamToAdd The team which will be added
 	 */
 	public void addTeam(Team teamToAdd) {
 		if (!teams.contains(teamToAdd)) {
@@ -282,7 +284,7 @@ public class Game extends GameManager implements Cloneable {
 	/**
 	 * Checks if a team exist inside the game
 	 * 
-	 * @param team The team that you need to check existence
+	 * @param teamName The team that you need to check existence
 	 * @return If the team exists or not
 	 */
 	public Boolean teamExists(String teamName) {
@@ -301,6 +303,7 @@ public class Game extends GameManager implements Cloneable {
 	/**
 	 * Set the world where the game is supposed to be in.
 	 *
+	 * @param <T> The world type
 	 * @param world The world
 	 */
 	public <T> void setWorld(T world) {
@@ -378,6 +381,7 @@ public class Game extends GameManager implements Cloneable {
 	 * Returns a specific game session from its id. Can be empty if the id is wrong
 	 * or out of the range.
 	 * 
+	 * @param id The session id
 	 * @return The session with its id
 	 */
 	public Optional<Game> getSession(Integer id) {

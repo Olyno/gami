@@ -75,6 +75,7 @@ public class Point {
     /**
      * Set author of the point
      *
+	 * @param <T> The player type
      * @param author The player who scored the point
      */
     public <T> void setAuthor( T author ) {

@@ -128,6 +128,7 @@ public abstract class GameManager {
 	 * Returns lobby of your Game/Team, Where players spawn for the first time for
 	 * teams and where players are before join your game.
 	 * 
+	 * @param <T> The lobby type
 	 * @return Lobby of your Game/Team
 	 */
 	@SuppressWarnings("unchecked")
@@ -139,6 +140,7 @@ public abstract class GameManager {
 	 * Set the location of the lobby of your Game/Team. Where players spawn for the
 	 * first time for teams and where players are before join your game.
 	 *
+	 * @param <T> The lobby type
 	 * @param lobby Lobby of your Game/Team
 	 */
 	public <T> void setLobby(T lobby) {
@@ -149,6 +151,7 @@ public abstract class GameManager {
 	 * Returns the spawn of your Game/Team, Where players are when they respawn for
 	 * teams and where players spawn when game started
 	 * 
+	 * @param <T> The spawn type
 	 * @return The spawn of your Game/Team
 	 */
 	@SuppressWarnings("unchecked")
@@ -160,6 +163,7 @@ public abstract class GameManager {
 	 * Set the location of the spawn of your Game/Team, Where players are when they
 	 * respawn for teams and where players spawn when game started.
 	 *
+	 * @param <T> The spawn type
 	 * @param spawn The spawn of your Game/Team
 	 */
 	public <T> void setSpawn(T spawn) {
@@ -169,6 +173,7 @@ public abstract class GameManager {
 	/**
 	 * Returns list of players in your Game or Team.
 	 * 
+	 * @param <T> The player type
 	 * @return Players in your Game/Team
 	 */
 	@SuppressWarnings("unchecked")
@@ -179,6 +184,7 @@ public abstract class GameManager {
 	/**
 	 * Add a player to your Game or Team
 	 *
+	 * @param <T> The player type
 	 * @param player The player who will join the Game/Team
 	 */
 	public abstract <T> void addPlayer(T player);
@@ -186,6 +192,7 @@ public abstract class GameManager {
 	/**
 	 * Remove a player from your Game or Team
 	 *
+	 * @param <T> The player type
 	 * @param player The player who will leave the Game/Team
 	 */
 	public abstract <T> void removePlayer(T player);
@@ -193,6 +200,7 @@ public abstract class GameManager {
 	/**
 	 * Checks if a player is in the Game or Team
 	 * 
+	 * @param <T> The player type
 	 * @param player The player to check if he is in the Game/Team
 	 * @return If the player is in your Game/Team or not
 	 */
@@ -203,6 +211,7 @@ public abstract class GameManager {
 	/**
 	 * Returns list of spectators in your Game or Team.
 	 * 
+	 * @param <T> The player type
 	 * @return Spectators in your Game/Team
 	 */
 	@SuppressWarnings("unchecked")
@@ -213,6 +222,7 @@ public abstract class GameManager {
 	/**
 	 * Add a spectator to your Game or Team
 	 *
+	 * @param <T> The player type
 	 * @param player The player who will spectate the Game/Team
 	 */
 	public abstract <T> void addSpectator(T player);
@@ -220,6 +230,7 @@ public abstract class GameManager {
 	/**
 	 * Remove a spectator from your Game or Team
 	 *
+	 * @param <T> The player type
 	 * @param player The player who will stop to spectate the Game/Team
 	 */
 	public abstract <T> void removeSpectator(T player);
@@ -227,6 +238,7 @@ public abstract class GameManager {
 	/**
 	 * Checks if a spectator is in the Game or Team
 	 * 
+	 * @param <T> The player type
 	 * @param player The spectator to check if he is in the Game/Team
 	 * @return If the spectator is in your Game/Team or not
 	 */
@@ -251,6 +263,7 @@ public abstract class GameManager {
 	/**
 	 * Add a message
 	 *
+	 * @param <T>     The GameMessage type (GameMessage or one of its child)
 	 * @param type    The GameMessageType of the message
 	 * @param message The message
 	 */
@@ -268,6 +281,7 @@ public abstract class GameManager {
 	/**
 	 * All existing messages from a type of message
 	 *
+	 * @param <T> The GameMessage type (GameMessage or one of its child)
 	 * @param type Message type
 	 * @return An ArrayList of messages
 	 */
@@ -279,6 +293,7 @@ public abstract class GameManager {
 	/**
 	 * All existing messages filtered by a GameMessageTarget
 	 *
+	 * @param <T>    The GameMessage type (GameMessage or one of its child)
 	 * @param type   Message type
 	 * @param target Message target
 	 * @return A List of filtered messages
