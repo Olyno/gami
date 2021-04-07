@@ -1,9 +1,9 @@
 # Gami
 
-Gami is a java librairy to create games easily.
+Gami is a java library to create games easily.
 
  * ⚡ Fast: Gami try to offer the best experience with the best speed available
- * 💪 Flexbile: Works with all stuff you use, as simple java game or Bukkit/spigot plugin
+ * 💪 Flexible: Works with all stuff you use, as simple java game or Bukkit/spigot plugin
  * 🧠 Human logic: All syntaxes are easy to understand and to use
 
 ## Usage
@@ -15,6 +15,8 @@ public class YourProject {
         Game myFirstGame = new Game("myFirstGame");
         Team redTeam = new Team("red");
         Team blueTeam = new Team("blue");
+        myFirstGame.addTeam(redTeam);
+        myFirstGame.addTeam(blueTeam);
         myFirstGame.start();
     }
 
